@@ -1,188 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book Secret Santa</title>
-<style>
-    body {
-        margin: 0;
-        font-family: "Segoe UI", sans-serif;
-        color: white;
-        text-align: center;
-        overflow-x: hidden;
-        position: relative;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Secret Santa</title>
 
-    /* Background slideshow */
-    .bg-slide {
-        position: fixed;
-        top:0; left:0; width:100%; height:100%;
-        background-size: cover;
-        background-position: center;
-        z-index: 0;
-        opacity: 0;
-        transition: opacity 2s ease-in-out;
-    }
+    <!-- Christmas Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap" rel="stylesheet">
 
-    .bg-slide.active {
-        opacity: 1;
-    }
+    <style>
+        body {
+            font-family: 'Mountains of Christmas', cursive;
+            background-image: url('https://i.imgur.com/0C5ZC3y.jpeg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #2a1d0f;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
 
-    /* Dark overlay for readability */
-    body::before {
-        content: "";
-        position: fixed;
-        top:0; left:0; width:100%; height:100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1;
-    }
+        header {
+            background: rgba(255, 245, 230, 0.75);
+            color: #7b2b00;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 3px solid #b98b5f;
+        }
 
-    /* All content above overlay */
-    body > * {
-        position: relative;
-        z-index: 2;
-    }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
 
-    h1 {
-        font-size: 3rem;
-        margin-top: 40px;
-        text-shadow: 2px 2px 8px #000;
-    }
+        /* Vintage frame container */
+        .frame {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 40px;
+            border: 15px solid transparent;
+            border-image: url('https://i.imgur.com/hCkCbfb.png') 30 round;
+            background: rgba(255, 250, 240, 0.85);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            border-radius: 10px;
+            font-size: 1.8rem;
+            line-height: 2.2rem;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
 
-    p {
-        width: 90%;
-        max-width: 750px;
-        margin: 20px auto;
-        font-size: 1.25rem;
-        line-height: 1.6;
-        background: rgba(255,255,255,0.12);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.25);
-    }
+        /* Book stack illustration */
+        .book-stack {
+            width: 180px;
+            margin: 0 auto 25px auto;
+        }
 
-    /* Snowflakes */
-    .snowflake {
-        position: fixed;
-        top: -10px;
-        color: white;
-        font-size: 20px;
-        animation: fall linear infinite;
-        pointer-events: none;
-        z-index: 3;
-    }
+        .icon {
+            width: 40px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
 
-    @keyframes fall {
-        0% { transform: translateY(-10vh); opacity: 1; }
-        100% { transform: translateY(110vh); opacity: 0.3; }
-    }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #5a3b1a;
+            font-size: 1rem;
+            background: rgba(255, 245, 230, 0.75);
+            border-top: 3px solid #b98b5f;
+        }
 
-    /* Shaking gift */
-    .gift {
-        margin: 30px auto;
-        width: 150px;
-        max-width: 40vw;
-        animation: shake 1.5s infinite;
-        cursor: pointer;
-        display: block;
-    }
+        /* Snowflakes */
+        .snowflake, .star {
+            position: fixed;
+            top: -10px;
+            pointer-events: none;
+            user-select: none;
+        }
 
-    @keyframes shake {
-        0%, 100% { transform: rotate(0deg); }
-        20% { transform: rotate(5deg); }
-        40% { transform: rotate(-5deg); }
-        60% { transform: rotate(4deg); }
-        80% { transform: rotate(-4deg); }
-    }
+        .snowflake {
+            color: white;
+            font-size: 1em;
+            animation: fall linear;
+        }
 
-    footer {
-        margin-top: 40px;
-        padding: 20px;
-        font-size: 0.9rem;
-        opacity: 0.8;
-    }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0.3; }
+        }
 
-    /* Responsive */
-    @media (max-width: 600px) {
-        h1 { font-size: 2.2rem; margin-top: 25px; }
-        p { font-size: 1.1rem; padding: 15px; }
-        .gift { width: 110px; }
-        audio { width: 90%; }
-    }
+        /* Glittering stars */
+        .star {
+            color: gold;
+            font-size: 18px;
+            animation: sparkle 1.5s infinite ease-in-out;
+        }
 
-    /* Music button */
-    #playMusic {
-        margin: 20px;
-        padding: 10px 20px;
-        font-size: 1rem;
-        background-color: #fff;
-        color: #c10f1a;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-    #playMusic:hover {
-        background-color: #ffdcdc;
-    }
-</style>
+        @keyframes sparkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.3); }
+            100% { opacity: 0.2; transform: scale(0.8); }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- Background slides -->
-<div class="bg-slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/4/4f/Vintage_Christmas_Card_1909.jpg');"></div>
-<div class="bg-slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d3/Vintage_Christmas_Card_Sleigh_1908.jpg');"></div>
-<div class="bg-slide" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/1/18/Vintage_Christmas_Card_1907.jpg');"></div>
+<header>
+    <h1>Book Secret Santa</h1>
+</header>
 
-<h1>🎄 Book Secret Santa 🎁</h1>
+<div class="frame">
 
-<!-- Shaking Gift -->
-<img class="gift"
-     src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gift_Flat_Icon.svg/512px-Gift_Flat_Icon.svg.png"
-     alt="Gift">
+    <!-- Book stack illustration -->
+    <img class="book-stack" 
+         src="https://cdn-icons-png.flaticon.com/512/3135/3135810.png" 
+         alt="Book stack illustration">
 
-<p>
-Come to our next meeting with a wrapped book, and at the end of the meeting we will all exchange the presents.<br>
-You decide what book to secretly present, and you do not know who will get your book.<br>
-You will definitely get a book as a present as well!<br>
-And who knows — maybe you are desperately waiting for it to appear on your shelf.
-</p>
+    <p>
+        <img class="icon" src="https://img.icons8.com/color/48/christmas-star.png" alt="icon">
+        Come to our meeting on <strong>19 December</strong> with a wrapped book as a gift for somebody.
+    </p>
 
-<!-- Music button -->
-<button id="playMusic">🎵 Play Christmas Music</button>
-<audio id="music" loop>
-    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/ccCommunity/Kevin_MacLeod/Christmas/Kevin_MacLeod_-_Jingle_Bells.mp3" type="audio/mpeg">
-</audio>
+    <p>
+        <img class="icon" src="https://img.icons8.com/color/48/gift.png" alt="icon">
+        At the end of the meeting we will exchange the gifts.
+    </p>
 
-<footer>© Book Secret Santa</footer>
+    <p>
+        <img class="icon" src="https://img.icons8.com/color/48/christmas-candle.png" alt="icon">
+        And who knows – maybe you will get the book which you desperately need on your shelf!
+    </p>
+</div>
 
+<footer>
+    &copy; 2025 Book Secret Santa
+</footer>
+
+<!-- Snowflakes + Stars -->
 <script>
+    const snowflakeCount = 60;
+    const starCount = 25;
+
     // Snowflakes
-    for (let i = 0; i < 50; i++) {
-        let snow = document.createElement('div');
-        snow.className = 'snowflake';
-        snow.innerHTML = '❄';
-        snow.style.left = Math.random() * 100 + 'vw';
-        snow.style.animationDuration = (5 + Math.random() * 7) + 's';
-        snow.style.fontSize = (12 + Math.random() * 20) + 'px';
-        document.body.appendChild(snow);
+    for (let i = 0; i < snowflakeCount; i++) {
+        let flake = document.createElement("div");
+        flake.classList.add("snowflake");
+        flake.textContent = "❄";
+        flake.style.left = Math.random() * 100 + "vw";
+        flake.style.fontSize = (Math.random() * 10 + 10) + "px";
+        flake.style.animationDuration = (Math.random() * 5 + 5) + "s";
+        flake.style.animationDelay = Math.random() * 10 + "s";
+        document.body.appendChild(flake);
     }
 
-    // Music play button
-    document.getElementById('playMusic').addEventListener('click', function() {
-        document.getElementById('music').play();
-        this.style.display = 'none';
-    });
-
-    // Background slideshow
-    const slides = document.querySelectorAll('.bg-slide');
-    let current = 0;
-    slides[current].classList.add('active');
-    setInterval(() => {
-        slides[current].classList.remove('active');
-        current = (current + 1) % slides.length;
-        slides[current].classList.add('active');
-    }, 8000); // Change every 8 seconds
+    // Glittering stars
+    for (let i = 0; i < starCount; i++) {
+        let star = document.createElement("div");
+        star.classList.add("star");
+        star.textContent = "✦";
+        star.style.left = Math.random() * 100 + "vw";
+        star.style.top = Math.random() * 100 + "vh";
+        star.style.animationDelay = (Math.random() * 2) + "s";
+        document.body.appendChild(star);
+    }
 </script>
 
 </body>
